@@ -20,59 +20,103 @@ class _HomeState extends State<Home> {
     final todoController = Get.find<TodoController>();
 
     return GetBuilder<TodoController>(
-        init: TodoController(),
-    initState: (_) {},
-    builder: (todoController) {
-    todoController.getData();
+      init: TodoController(),
+      initState: (_) {},
+      builder: (todoController) {
+        todoController.getData();
 
-    return Scaffold(
-    body: Center(
-    child: todoController.isLoading ? const SizedBox(
-      child: CircularProgressIndicator(),
-    )
-        : ListView.builder(
-      itemCount: todoController.taskList.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: Checkbox(
-              onChanged: (value) => todoController.addTask(
-                  todoController.taskList[index].task_name,
-                  !todoController.taskList[index].isDone,
-                  todoController.taskList[index].id),
-              value: todoController.taskList[index].isDone),
-          title: Text(todoController.taskList[index].task_name),
-          trailing: SizedBox(
-            width: 100,
-            child: Row(
-              children: [
-                IconButton(
-                onPressed: () => addTaskDialog(
-              todoController,
-              'Update Task',
-              todoController.taskList[index].id,
-              todoController.taskList[index].task_name),
-                  icon: const Icon(Icons.edit),
-        ),
-              IconButton(
-                 onPressed: () => todoController.deleteTask(
-                 todoController.taskList[index].id),
-                 icon: const Icon(Icons.delete),
-                 color: Colors.amberAccent,
-        ),
-        ],
-        ),
-        ),
+        return Scaffold(
+          backgroundColor: Color(0xff404652),
+          appBar: AppBar(
+            bottomOpacity: 0.0,
+            elevation: 0.0,
+          ),
+          body: Center(
+            child: todoController.isLoading
+                ? const SizedBox(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: todoController.taskList.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top:25.0),
+                        child: SizedBox(
+                          height: 150.0,
+                          child: Card(
+                            elevation: 20,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            color: Color(0xff272c33),
+                            margin: new EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 25.0),
+                              child: ListTile(
+                                leading: Checkbox(
+                                    shape: CircleBorder(),
+                                    onChanged: (value) => todoController.addTask(
+                                        todoController.taskList[index].task_name,
+                                        !todoController.taskList[index].isDone,
+                                        todoController.taskList[index].id),
+                                    value: todoController.taskList[index].isDone),
+                                title: Text(
+                                  todoController.taskList[index].task_name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                  ),
+                                ),
+                                trailing: SizedBox(
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: IconButton(
+                                          onPressed: () => addTaskDialog(
+                                              todoController,
+                                              'Update Task',
+                                              todoController.taskList[index].id,
+                                              todoController
+                                                  .taskList[index].task_name),
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            size: 25.0,
+                                          ),
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: IconButton(
+                                          onPressed: () => todoController
+                                              .deleteTask(todoController
+                                                  .taskList[index].id),
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            size: 25.0,
+                                          ),
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            elevation: 0.0,
+            child: const Icon(Icons.add_task, ),
+            onPressed: () async =>
+                await addTaskDialog(todoController, 'TASK', '', ''),
+          ),
         );
       },
-    ),
-    ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add_task),
-        onPressed: () async =>
-        await addTaskDialog(todoController, 'Add Todo', '', ''),
-      ),
-    );
-    },
     );
   }
 
@@ -84,24 +128,33 @@ class _HomeState extends State<Home> {
 
     Get.defaultDialog(
       title: title,
-      content: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            TextFormField(
-              controller: _taskController,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await todoController.addTask(
-                    _taskController.text.trim(), false, id);
+      content: Padding(
+        padding: const EdgeInsets.only(top: 60.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: TextFormField(
+                  controller: _taskController,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await todoController.addTask(
+                        _taskController.text.trim(), false, id);
 
-                _taskController.clear();
-                Get.back();
-              },
-              child: const Icon(Icons.add),
-            ),
-          ],
+                    _taskController.clear();
+                    Get.back();
+                  },
+                  child: Text("save"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

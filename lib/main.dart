@@ -22,6 +22,10 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.amber,
+        unselectedWidgetColor: Colors.white,
+
+        fontFamily: 'Arial',
+
       ),
       home: const Home(),
       initialBinding: ControllerBindings(),
